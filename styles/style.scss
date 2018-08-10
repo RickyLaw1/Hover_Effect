@@ -1,0 +1,31 @@
+@import "partials/setup";
+
+.background {
+    height: 100vh;
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.gameScreen {
+    border: 1px solid #000;
+    background-color: rgb(149, 149, 149);
+    height: 500px;
+    width: 500px;
+    position: relative;
+}
+
+.playerModel {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #000;
+    position: absolute;
+}
+
+.playerCoords {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: white;
+}
