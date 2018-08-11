@@ -150,7 +150,8 @@ legend, button::-moz-focus-inner, input::-moz-focus-inner {
   background-color: #959595;
   height: 500px;
   width: 500px;
-  position: relative; }
+  position: relative;
+  overflow: hidden; }
 
 .playerModel {
   width: 20px;
@@ -163,3 +164,11 @@ legend, button::-moz-focus-inner, input::-moz-focus-inner {
   top: 0;
   left: 0;
   color: white; }
+
+.projectile {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 0;
+  left: 50px;
+  text-align: center; }
