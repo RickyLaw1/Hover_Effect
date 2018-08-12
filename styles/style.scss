@@ -32,11 +32,18 @@
 }
 
 .projectile {
-    width: 20px;
-    height: 20px;
+    // width: 20px;
+    // height: 20px;
     position: absolute;
     top: 0;
     left: 50px;
-    // border: 1px solid purple;
+    border: 1px solid purple;
     text-align: center;
+}
+
+.enemy {
+    width: 100px;
+    height: 20px;
+    border: 1px solid purple;
+    position: absolute;
 }

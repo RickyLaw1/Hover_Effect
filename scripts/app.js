@@ -7,6 +7,7 @@ app.init = () => {
 }
 
 app.setup = () => {
+    app.timeElapsed = 0;
     app.stepSize = 5;
 
     app.playerCoords = {
@@ -25,6 +26,9 @@ app.setup = () => {
 
     app.projectiles = [];
     app.projectileCount = 0;
+
+    app.enemies = [];
+    app.enemyCount = 0;
 }
 
 app.gameLoop = (timestamp) => {
@@ -33,6 +37,12 @@ app.gameLoop = (timestamp) => {
     app.update(progress);
     app.drawPlayer();
     app.showPlayerCoords();
+    app.timeLine();
+
+    if (app.enemyCount > 0) {
+        app.drawEnemy();
+    }
+
 
     app.lastRender = timestamp;
     window.requestAnimationFrame(app.gameLoop);
@@ -43,6 +53,20 @@ app.update = () => {
     app.playerMovement();
     app.projectileMovement();
     app.deleteProjectile();
+    // app.enemyMovement();
+}
+
+app.timeLine = () => {
+    app.timeElapsed += 10;
+
+    if (app.timeElapsed === 100) {
+        // app.spawnEnemy(100, 0);
+        app.spawnEnemy(220, 0);
+
+        console.log('spawn enemy');
+    }
+    // console.log(app.timeElapsed);
+
 }
 
 app.drawPlayer = () => {
@@ -84,15 +108,27 @@ app.projectileMovement = () => {
         for (let i = 1; i < app.projectileCount + 1; i++) {
             app.projectiles[i].y -= 5;
             app.drawProjectile(i);
+            app.updateHitBox(app.projectiles[i]);
         }
+        app.checkHit();
+    }
+}
+
+app.enemyMovement = () => {
+    for (let i = 1; i < app.enemyCount + 1; i++) {
+        app.enemies[i].y++;
+        app.updateHitBox(app.enemies[i]);
     }
 }
 
 app.drawProjectile = (projectileNum) => {
+    const currentProjectile = app.projectiles[projectileNum];
     $(`.projectile${projectileNum}`)
         .css({
-            "top": `${app.projectiles[projectileNum].y}px`,
-            "left": `${app.projectiles[projectileNum].x}px`,
+            "top": `${currentProjectile.y}px`,
+            "left": `${currentProjectile.x}px`,
+            "width": `${currentProjectile.width}`,
+            "height": `${currentProjectile.height}`
         });
 }
 
@@ -161,15 +197,94 @@ app.makeProjectile = () => {
         .addClass(`projectile projectile${count}`)
         .text(``);
 
+    $(".gameScreen").append($projectile);
+
     // Set projectile coordinates to player coordinates
     app.projectiles[count] = {
         x: app.playerCoords.x,
-        y: app.playerCoords.y
+        y: app.playerCoords.y,
+        height: 20,
+        width: 11
     };
 
-    $(".gameScreen").append($projectile);
+    app.createHitBox(app.projectiles[count]);
+}
+
+app.spawnEnemy = (x, y) => {
+    app.enemyCount++;
+    let count = app.enemyCount;
+
+    app.enemies[count] = {
+        x: x,
+        y: y,
+        height: 20,
+        width: 100
+    };
+
+    app.createHitBox(app.enemies[count]);
+
+    const $enemy = $("<div>").addClass(`enemy enemy${count}`);
+    $(".gameScreen").append($enemy);
+    // console.log('');
+
+}
+
+app.createHitBox = (entity) => {
+    entity.boundary = [];
+    const height = entity.height;
+    const width = entity.width;
+
+    for (let i = 0; i < width; i++) {
+        entity.boundary[i] = {};
+        entity.boundary[i].x = entity.x + i;
+        entity.boundary[i].y = height;
+    }
+
+    // console.log(entity.boundary);
+}
+
+app.updateHitBox = (entity) => {
+
+    entity.boundary.forEach((point) => {
+        point.y = entity.y;
+    })
+}
+
+app.checkHit = () => {
+    const hitBox1 = app.projectiles;
+    const hitBox2 = app.enemies;
+
+
+    // For each projectile
+    hitBox1.forEach((projectile) => {
+        projectile.boundary.forEach((point1) => {
+            // For each Enemy
+            hitBox2.forEach((enemy) => {
+                enemy.boundary.forEach((point2) => {
+
+                    if (point1.y === point2.y &&
+                        point1.x === point2.x) {
+
+                        console.log('hit');
+                    }
+                });
+            });
+        });
+    });
+}
+
+app.drawEnemy = () => {
+    for (let i = 1; i < app.enemyCount + 1; i++) {
+        $(`.enemy${i}`).css({
+            "top": `${app.enemies[i].y}px`,
+            "left": `${app.enemies[i].x}px`
+        });
+    }
+
 }
 
 $(function () {
+
     app.init();
 });
+
