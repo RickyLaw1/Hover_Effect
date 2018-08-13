@@ -41,6 +41,7 @@ app.gameLoop = (timestamp) => {
 
     if (app.enemyCount > 0) {
         app.drawEnemy();
+
     }
 
 
@@ -53,6 +54,7 @@ app.update = () => {
     app.playerMovement();
     app.projectileMovement();
     app.deleteProjectile();
+
     // app.enemyMovement();
 }
 
@@ -105,20 +107,24 @@ app.playerMovement = () => {
 
 app.projectileMovement = () => {
     if (app.shoot) {
-        for (let i = 1; i < app.projectileCount + 1; i++) {
-            app.projectiles[i].y -= 5;
-            app.drawProjectile(i);
-            app.updateHitBox(app.projectiles[i]);
-        }
-        app.checkHit();
+        let count = 1;
+        app.projectiles.forEach((projectile) => {
+            if (projectile.move) {
+                projectile.y -= 5;
+                app.drawProjectile(count);
+                app.updateHitBox(projectile);
+                app.checkHit();
+            }
+            count++;
+        });
     }
 }
 
 app.enemyMovement = () => {
-    for (let i = 1; i < app.enemyCount + 1; i++) {
-        app.enemies[i].y++;
-        app.updateHitBox(app.enemies[i]);
-    }
+    app.enemies.forEach((enemy) => {
+        enemy.y++;
+        app.updateHitBox(enemy);
+    });
 }
 
 app.drawProjectile = (projectileNum) => {
@@ -133,13 +139,14 @@ app.drawProjectile = (projectileNum) => {
 }
 
 app.deleteProjectile = () => {
-    for (let i = 1; i <= app.projectileCount; i++) {
-        // console.log(app.projectiles[i]);
-        if (app.projectiles[i].y < 0) {
-
-            $(`.projectile${i}`).remove();
+    let count = 0;
+    app.projectiles.forEach((projectile) => {
+        if (projectile.y < 0) {
+            count++;
+            $(`.projectile${count}`).remove();
+            projectile.move = false;
         }
-    }
+    });
 }
 
 app.showPlayerCoords = () => {
@@ -192,8 +199,8 @@ app.keyUp = (e) => {
 app.makeProjectile = () => {
     app.projectileCount++;
     count = app.projectileCount;
-
-    const $projectile = $(`<i class="fa fal fa-mouse-pointer"></i>`)
+    // const $projectile = $(`<i class="fa fal fa-mouse-pointer"></i>`)
+    const $projectile = $("<div>")
         .addClass(`projectile projectile${count}`)
         .text(``);
 
@@ -204,7 +211,8 @@ app.makeProjectile = () => {
         x: app.playerCoords.x,
         y: app.playerCoords.y,
         height: 20,
-        width: 11
+        width: 11,
+        move: true
     };
 
     app.createHitBox(app.projectiles[count]);
@@ -234,41 +242,45 @@ app.createHitBox = (entity) => {
     const height = entity.height;
     const width = entity.width;
 
-    for (let i = 0; i < width; i++) {
-        entity.boundary[i] = {};
-        entity.boundary[i].x = entity.x + i;
-        entity.boundary[i].y = height;
-    }
-
+    entity.points = [
+        { x: entity.x, y: entity.y },
+        { x: entity.x + width, y: entity.y },
+        { x: entity.x, y: entity.y + height },
+        { x: entity.x + width, y: entity.y + height }
+    ];
     // console.log(entity.boundary);
 }
 
 app.updateHitBox = (entity) => {
 
-    entity.boundary.forEach((point) => {
+    entity.points.forEach((point) => {
         point.y = entity.y;
+        point.x = entity.x;
     })
 }
 
 app.checkHit = () => {
-    const hitBox1 = app.projectiles;
-    const hitBox2 = app.enemies;
+    const hitBox1 = app.enemies;
+    const hitBox2 = app.projectiles;
 
+    // For each enemy
+    hitBox1.forEach((enemy) => {
+        // For each projectile
+        hitBox2.forEach((projectile) => {
+            if (projectile.points[0].y <= enemy.points[2].y &&
+                projectile.points[0].y >= enemy.points[0].y) {
+                console.log("Vertical overlap");
 
-    // For each projectile
-    hitBox1.forEach((projectile) => {
-        projectile.boundary.forEach((point1) => {
-            // For each Enemy
-            hitBox2.forEach((enemy) => {
-                enemy.boundary.forEach((point2) => {
-
-                    if (point1.y === point2.y &&
-                        point1.x === point2.x) {
-
-                        console.log('hit');
-                    }
-                });
-            });
+                // 1st Horizontal overlap
+                if (projectile.points[0].x >= enemy.points[0].x &&
+                    projectile.points[0].x <= enemy.points[1].x) {
+                    console.log('first horizontal overlap');
+                    // 2nd Horizontal overlap
+                } else if (projectile.points[1].x >= enemy.points[0].x &&
+                    projectile.points[1].x <= enemy.points[1].x) {
+                    console.log('2nd horizontal overlap');
+                }
+            }
         });
     });
 }
