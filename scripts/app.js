@@ -44,7 +44,6 @@ app.gameLoop = (timestamp) => {
 
     }
 
-
     app.lastRender = timestamp;
     window.requestAnimationFrame(app.gameLoop);
 }
@@ -55,7 +54,7 @@ app.update = () => {
     app.projectileMovement();
     app.deleteProjectile();
 
-    // app.enemyMovement();
+    app.enemyMovement();
 }
 
 app.timeLine = () => {
@@ -67,8 +66,6 @@ app.timeLine = () => {
 
         console.log('spawn enemy');
     }
-    // console.log(app.timeElapsed);
-
 }
 
 app.drawPlayer = () => {
@@ -103,50 +100,6 @@ app.playerMovement = () => {
     } else if (app.key.right) {
         app.playerCoords.x += app.stepSize;
     }
-}
-
-app.projectileMovement = () => {
-    if (app.shoot) {
-        let count = 1;
-        app.projectiles.forEach((projectile) => {
-            if (projectile.move) {
-                projectile.y -= 5;
-                app.drawProjectile(count);
-                app.updateHitBox(projectile);
-                app.checkHit();
-            }
-            count++;
-        });
-    }
-}
-
-app.enemyMovement = () => {
-    app.enemies.forEach((enemy) => {
-        enemy.y++;
-        app.updateHitBox(enemy);
-    });
-}
-
-app.drawProjectile = (projectileNum) => {
-    const currentProjectile = app.projectiles[projectileNum];
-    $(`.projectile${projectileNum}`)
-        .css({
-            "top": `${currentProjectile.y}px`,
-            "left": `${currentProjectile.x}px`,
-            "width": `${currentProjectile.width}`,
-            "height": `${currentProjectile.height}`
-        });
-}
-
-app.deleteProjectile = () => {
-    let count = 0;
-    app.projectiles.forEach((projectile) => {
-        if (projectile.y < 0) {
-            count++;
-            $(`.projectile${count}`).remove();
-            projectile.move = false;
-        }
-    });
 }
 
 app.showPlayerCoords = () => {
@@ -212,10 +165,51 @@ app.makeProjectile = () => {
         y: app.playerCoords.y,
         height: 20,
         width: 11,
-        move: true
+        move: true,
+        hit: false
     };
 
     app.createHitBox(app.projectiles[count]);
+}
+
+app.drawProjectile = (projectileNum) => {
+    const currentProjectile = app.projectiles[projectileNum];
+    $(`.projectile${projectileNum}`)
+        .css({
+            "top": `${currentProjectile.y}px`,
+            "left": `${currentProjectile.x}px`,
+            "width": `${currentProjectile.width}`,
+            "height": `${currentProjectile.height}`
+        });
+}
+
+app.projectileMovement = () => {
+    if (app.shoot) {
+        app.projectiles.forEach((projectile, i) => {
+            if (projectile.move && !projectile.hit) {
+                projectile.y -= 5;
+                app.drawProjectile(i);
+                app.updateHitBox(projectile, -5);
+                app.checkHit();
+            } else if (projectile.hit) {
+                let hitDelay = window.setTimeout(function () {
+                    projectile.hit = false;
+                    projectile.y = -1;
+                    app.deleteProjectile();
+
+                }, 250);
+            }
+        });
+    }
+}
+
+app.deleteProjectile = () => {
+    app.projectiles.forEach((projectile, i) => {
+        if (projectile.y < 0) {
+            $(`.projectile${i}`).remove();
+            projectile.move = false;
+        }
+    });
 }
 
 app.spawnEnemy = (x, y) => {
@@ -223,10 +217,12 @@ app.spawnEnemy = (x, y) => {
     let count = app.enemyCount;
 
     app.enemies[count] = {
+        name: "enemy",
         x: x,
         y: y,
         height: 20,
-        width: 100
+        width: 100,
+        hit: false
     };
 
     app.createHitBox(app.enemies[count]);
@@ -234,7 +230,33 @@ app.spawnEnemy = (x, y) => {
     const $enemy = $("<div>").addClass(`enemy enemy${count}`);
     $(".gameScreen").append($enemy);
     // console.log('');
+}
 
+app.drawEnemy = () => {
+    for (let i = 1; i < app.enemyCount + 1; i++) {
+        $(`.enemy${i}`).css({
+            "top": `${app.enemies[i].y}px`,
+            "left": `${app.enemies[i].x}px`
+        });
+    }
+}
+
+app.enemyMovement = () => {
+    app.enemies.forEach((enemy, i) => {
+        if (!enemy.hit) {
+            enemy.y++;
+            app.updateHitBox(enemy, 1);
+        } else {
+            // app.startHitAnimation(enemy, i);
+
+            let hitDelay = window.setTimeout(function () {
+                enemy.hit = false;
+
+                // app.endHitAnimation(enemy, i);
+            }, 300);
+
+        }
+    });
 }
 
 app.createHitBox = (entity) => {
@@ -248,14 +270,12 @@ app.createHitBox = (entity) => {
         { x: entity.x, y: entity.y + height },
         { x: entity.x + width, y: entity.y + height }
     ];
-    // console.log(entity.boundary);
 }
 
-app.updateHitBox = (entity) => {
+app.updateHitBox = (entity, step = 1) => {
 
     entity.points.forEach((point) => {
-        point.y = entity.y;
-        point.x = entity.x;
+        point.y += step;
     })
 }
 
@@ -264,36 +284,40 @@ app.checkHit = () => {
     const hitBox2 = app.projectiles;
 
     // For each enemy
-    hitBox1.forEach((enemy) => {
+    hitBox1.forEach((enemy, i) => {
         // For each projectile
         hitBox2.forEach((projectile) => {
             if (projectile.points[0].y <= enemy.points[2].y &&
                 projectile.points[0].y >= enemy.points[0].y) {
-                console.log("Vertical overlap");
 
                 // 1st Horizontal overlap
                 if (projectile.points[0].x >= enemy.points[0].x &&
                     projectile.points[0].x <= enemy.points[1].x) {
-                    console.log('first horizontal overlap');
+                    projectile.hit = true;
+                    enemy.hit = true;
+
+                    // enemy.hit = Math.ceil(enemy.hit + 1 / 10);
+
                     // 2nd Horizontal overlap
                 } else if (projectile.points[1].x >= enemy.points[0].x &&
                     projectile.points[1].x <= enemy.points[1].x) {
-                    console.log('2nd horizontal overlap');
+                    projectile.hit = true;
+                    // enemy.hit = Math.ceil(enemy.hit + 1 / 10);
+                    enemy.hit = true;
                 }
             }
         });
     });
 }
 
-app.drawEnemy = () => {
-    for (let i = 1; i < app.enemyCount + 1; i++) {
-        $(`.enemy${i}`).css({
-            "top": `${app.enemies[i].y}px`,
-            "left": `${app.enemies[i].x}px`
-        });
-    }
-
+app.startHitAnimation = (entity, index) => {
+    // console.log();
+    $(`.${entity.name + index}`).addClass("hitAnimation");
 }
+app.endHitAnimation = (entity, index) => {
+    $(`.${entity.name + index}`).removeClass("hitAnimation");
+}
+
 
 $(function () {
 

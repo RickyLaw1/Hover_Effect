@@ -170,10 +170,14 @@ legend, button::-moz-focus-inner, input::-moz-focus-inner {
   top: 0;
   left: 50px;
   border: 1px solid purple;
-  text-align: center; }
+  text-align: center;
+  z-index: 10; }
 
 .enemy {
   width: 100px;
   height: 20px;
   border: 1px solid purple;
   position: absolute; }
+
+.hitAnimation {
+  background-color: red; }

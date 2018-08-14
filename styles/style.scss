@@ -39,6 +39,7 @@
     left: 50px;
     border: 1px solid purple;
     text-align: center;
+    z-index: 10;
 }
 
 .enemy {
@@ -46,4 +47,9 @@
     height: 20px;
     border: 1px solid purple;
     position: absolute;
+    // transition: background-color 0.3s;
+}
+
+.hitAnimation {
+    background-color: red
 }
