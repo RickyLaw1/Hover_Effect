@@ -1,4 +1,8 @@
 @import "partials/setup";
+* {
+    margin: 0;
+    padding: 0;
+}
 
 .background {
     height: 100vh;
@@ -40,16 +44,21 @@
     border: 1px solid purple;
     text-align: center;
     z-index: 10;
+    // background-color: white;
 }
 
 .enemy {
     width: 100px;
     height: 20px;
+    color: blue;
     border: 1px solid purple;
     position: absolute;
-    // transition: background-color 0.3s;
+    transition: background-color 0.1s, transform 0.1s;
 }
 
 .hitAnimation {
-    background-color: red
+    // background-color: red;
+    color: purple;
+    // transform: rotate(360deg);
+    text-decoration: underline;
 }

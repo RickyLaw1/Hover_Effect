@@ -39,6 +39,11 @@ app.gameLoop = (timestamp) => {
     app.showPlayerCoords();
     app.timeLine();
 
+    if (app.shoot) {
+
+        app.projectileMovement();
+    }
+
     if (app.enemyCount > 0) {
         app.drawEnemy();
 
@@ -51,9 +56,7 @@ app.gameLoop = (timestamp) => {
 app.update = () => {
     app.checkPlayerBounds();
     app.playerMovement();
-    app.projectileMovement();
     app.deleteProjectile();
-
     app.enemyMovement();
 }
 
@@ -61,12 +64,22 @@ app.timeLine = () => {
     app.timeElapsed += 10;
 
     if (app.timeElapsed === 100) {
-        // app.spawnEnemy(100, 0);
+        // app.spawnEnemy(100, 0)
         app.spawnEnemy(220, 0);
 
         console.log('spawn enemy');
+    } else if (app.timeElapsed === 2000) {
+        // app.spawnEnemy(220, 0);
+        for (let i = 0; i < 20; i++) {
+            let xPos = app.random(500);
+            let yPos = app.random(50);
+            app.spawnEnemy(xPos, yPos);
+        }
     }
 }
+
+app.random = (range) => Math.floor(Math.random() * range);
+
 
 app.drawPlayer = () => {
     $(".playerModel")
@@ -133,7 +146,7 @@ app.keyDown = (e) => {
     } else if (e.key === "d") {
         app.key.right = true;
     } else if (e.key === " ") {
-        app.shoot = true;
+
         app.makeProjectile();
     }
 }
@@ -155,7 +168,8 @@ app.makeProjectile = () => {
     // const $projectile = $(`<i class="fa fal fa-mouse-pointer"></i>`)
     const $projectile = $("<div>")
         .addClass(`projectile projectile${count}`)
-        .text(``);
+        .text(``)
+        .css("background-color", `rgb(${app.random(255)}, ${app.random(255)}, ${app.random(255)}`);
 
     $(".gameScreen").append($projectile);
 
@@ -170,6 +184,7 @@ app.makeProjectile = () => {
     };
 
     app.createHitBox(app.projectiles[count]);
+    app.shoot = true;
 }
 
 app.drawProjectile = (projectileNum) => {
@@ -190,8 +205,13 @@ app.projectileMovement = () => {
                 projectile.y -= 5;
                 app.drawProjectile(i);
                 app.updateHitBox(projectile, -5);
+                // console.log(projectile.points);
+
                 app.checkHit();
             } else if (projectile.hit) {
+                projectile.points.forEach((point) => {
+                    point.y = -1;
+                });
                 let hitDelay = window.setTimeout(function () {
                     projectile.hit = false;
                     projectile.y = -1;
@@ -227,7 +247,9 @@ app.spawnEnemy = (x, y) => {
 
     app.createHitBox(app.enemies[count]);
 
-    const $enemy = $("<div>").addClass(`enemy enemy${count}`);
+    const $enemy = $("<div>")
+        .addClass(`enemy enemy${count}`)
+    // .html("<h3>Hello</h3>");
     $(".gameScreen").append($enemy);
     // console.log('');
 }
@@ -243,24 +265,38 @@ app.drawEnemy = () => {
 
 app.enemyMovement = () => {
     app.enemies.forEach((enemy, i) => {
+
         if (!enemy.hit) {
             enemy.y++;
             app.updateHitBox(enemy, 1);
         } else {
-            // app.startHitAnimation(enemy, i);
+            app.startHitAnimation(enemy, i);
 
             let hitDelay = window.setTimeout(function () {
+                // console.log(enemy.hit);
                 enemy.hit = false;
-
-                // app.endHitAnimation(enemy, i);
+                app.endHitAnimation(enemy, i);
+                app.enemyDeath(enemy, i);
             }, 300);
 
         }
     });
 }
 
+app.enemyDeath = (entity, index) => {
+    $(`.enemy${index}`).remove();
+    entity.points.forEach((point) => {
+        point.y = -1;
+    });
+    // app.projectiles.forEach((projectile, i) => {
+    //     if (projectile.y < 0) {
+    //         $(`.projectile${i}`).remove();
+    //         projectile.move = false;
+    //     }
+    // });
+}
+
 app.createHitBox = (entity) => {
-    entity.boundary = [];
     const height = entity.height;
     const width = entity.width;
 
@@ -270,6 +306,12 @@ app.createHitBox = (entity) => {
         { x: entity.x, y: entity.y + height },
         { x: entity.x + width, y: entity.y + height }
     ];
+    // console.log(entity.points[0].y);
+    // console.log(entity.points[1].y);
+    // console.log(entity.points[2].y);
+    // console.log(entity.points[3].y);
+    // console.log(app.projectiles.points);
+
 }
 
 app.updateHitBox = (entity, step = 1) => {
@@ -286,7 +328,7 @@ app.checkHit = () => {
     // For each enemy
     hitBox1.forEach((enemy, i) => {
         // For each projectile
-        hitBox2.forEach((projectile) => {
+        hitBox2.forEach((projectile, j) => {
             if (projectile.points[0].y <= enemy.points[2].y &&
                 projectile.points[0].y >= enemy.points[0].y) {
 
@@ -295,6 +337,8 @@ app.checkHit = () => {
                     projectile.points[0].x <= enemy.points[1].x) {
                     projectile.hit = true;
                     enemy.hit = true;
+                    // console.log('hit', j);
+
 
                     // enemy.hit = Math.ceil(enemy.hit + 1 / 10);
 
