@@ -1,0 +1,44 @@
+* {
+    font-family: 'Catamaran', sans-serif;
+}
+h1 {
+    font-size: 8rem;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+h2 {
+    font-size: 4.6rem;
+    text-transform: uppercase;
+    color:  #2a2a2a;
+    // line-height: 0.71;
+}
+h3 {
+    font-size: 3.2rem;
+    text-transform: uppercase;
+    line-height: 1.021;
+}
+h4 {
+    font-size: 2rem;
+    text-transform: uppercase;
+    line-height: 1.634;
+}
+
+p {
+    font-size: 2.4rem;
+    font-family: 'Lato', sans-serif;
+    line-height: 1.583;
+}
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+// Font sizes for mobile
+@media (max-width: 526px) {
+    h2 {
+        font-size: 4rem;
+    }
+    h3 {
+        font-size: 3rem;
+    }
+}

@@ -133,8 +133,49 @@ legend, button::-moz-focus-inner, input::-moz-focus-inner {
   box-sizing: border-box; }
 
 * {
+  font-family: 'Catamaran', sans-serif; }
+
+h1 {
+  font-size: 8rem;
+  text-transform: uppercase;
+  font-weight: 700; }
+
+h2 {
+  font-size: 4.6rem;
+  text-transform: uppercase;
+  color: #2a2a2a; }
+
+h3 {
+  font-size: 3.2rem;
+  text-transform: uppercase;
+  line-height: 1.021; }
+
+h4 {
+  font-size: 2rem;
+  text-transform: uppercase;
+  line-height: 1.634; }
+
+p {
+  font-size: 2.4rem;
+  font-family: 'Lato', sans-serif;
+  line-height: 1.583; }
+
+a {
+  text-decoration: none;
+  color: inherit; }
+
+@media (max-width: 526px) {
+  h2 {
+    font-size: 4rem; }
+  h3 {
+    font-size: 3rem; } }
+
+* {
   margin: 0;
   padding: 0; }
+
+html {
+  font-size: 62.5%; }
 
 .background {
   height: 100vh;
@@ -151,16 +192,28 @@ legend, button::-moz-focus-inner, input::-moz-focus-inner {
 
 .gameScreen {
   border: 1px solid #000;
-  background-color: #959595;
+  background: url(../assets/space.jpg);
+  background-size: cover;
   height: 500px;
   width: 500px;
   position: relative;
   overflow: hidden; }
 
+.score {
+  color: rgba(255, 255, 255, 0.322);
+  position: absolute;
+  bottom: 0; }
+
+.lives {
+  position: absolute;
+  bottom: 0;
+  right: 5px;
+  color: red; }
+  .lives i {
+    font-size: 20px; }
+
 .playerModel {
-  width: 20px;
-  height: 20px;
-  border: 1px solid #000;
+  border: 1px solid white;
   position: absolute; }
 
 .playerCoords {
@@ -178,10 +231,9 @@ legend, button::-moz-focus-inner, input::-moz-focus-inner {
   z-index: 10; }
 
 .enemy {
-  width: 100px;
-  height: 20px;
   color: blue;
   border: 1px solid purple;
+  background-color: #e481ce;
   position: absolute;
   -webkit-transition: background-color 0.1s, -webkit-transform 0.1s;
   transition: background-color 0.1s, -webkit-transform 0.1s;
@@ -190,5 +242,6 @@ legend, button::-moz-focus-inner, input::-moz-focus-inner {
   transition: background-color 0.1s, transform 0.1s, -webkit-transform 0.1s; }
 
 .hitAnimation {
+  background-color: red;
   color: purple;
   text-decoration: underline; }

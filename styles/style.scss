@@ -1,7 +1,13 @@
 @import "partials/setup";
+@import "partials/typography";
+
 * {
     margin: 0;
     padding: 0;
+}
+
+html {
+    font-size: 62.5%;
 }
 
 .background {
@@ -14,17 +20,37 @@
 
 .gameScreen {
     border: 1px solid #000;
-    background-color: rgb(149, 149, 149);
+    background: url(../assets/space.jpg);
+    background-size: cover;
+    // background-position: bottom 0 left 0;
     height: 500px;
     width: 500px;
     position: relative;
     overflow: hidden;
 }
 
+.score {
+    color: rgba(255, 255, 255, 0.322);
+    position: absolute;
+    bottom: 0;
+    // transform: translateY(100%);
+
+}
+
+
+.lives {
+    position: absolute;
+    bottom: 0;
+    right: 5px;
+    color: red;
+       i {
+        font-size: 20px;
+    }
+}
 .playerModel {
-    width: 20px;
-    height: 20px;
-    border: 1px solid #000;
+    // width: 20px;
+    // height: 20px;
+    border: 1px solid white;
     position: absolute;
 }
 
@@ -48,16 +74,17 @@
 }
 
 .enemy {
-    width: 100px;
-    height: 20px;
+    // width: 100px;
+    // height: 20px;
     color: blue;
     border: 1px solid purple;
+    background-color: rgb(228, 129, 206);
     position: absolute;
     transition: background-color 0.1s, transform 0.1s;
 }
 
 .hitAnimation {
-    // background-color: red;
+    background-color: red;
     color: purple;
     // transform: rotate(360deg);
     text-decoration: underline;

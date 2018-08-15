@@ -7,13 +7,9 @@ app.init = () => {
 }
 
 app.setup = () => {
+    app.windowWidth = $(window).width();
     app.timeElapsed = 0;
     app.stepSize = 5;
-
-    app.playerCoords = {
-        x: 250,
-        y: 450
-    }
 
     app.lastRender = 0;
 
@@ -24,11 +20,39 @@ app.setup = () => {
         right: false
     };
 
+    app.score = 0;
+    app.spawnPlayer();
+
     app.projectiles = [];
     app.projectileCount = 0;
 
     app.enemies = [];
     app.enemyCount = 0;
+
+    app.enemyType = [
+        {
+            name: "enemy1",
+            height: 20,
+            width: 100
+        },
+        {
+            name: "enemy2",
+            height: 100,
+            width: 100
+        },
+        {
+            name: "enemy3",
+            height: 20,
+            width: 100
+        },
+        {
+            name: "enemy4",
+            height: 20,
+            width: 100
+        },
+    ];
+
+    app.scrollHeight = 0;
 }
 
 app.gameLoop = (timestamp) => {
@@ -37,6 +61,9 @@ app.gameLoop = (timestamp) => {
     app.update(progress);
     app.drawPlayer();
     app.showPlayerCoords();
+    app.updateScore();
+
+    app.scrollingBackground();
     app.timeLine();
 
     if (app.shoot) {
@@ -58,6 +85,15 @@ app.update = () => {
     app.playerMovement();
     app.deleteProjectile();
     app.enemyMovement();
+    // When player is hit have 1 second of invincibility
+    if (app.playerCoords.hit) {
+        let delay = window.setTimeout(function () {
+            app.playerCoords.hit = false;
+            app.playerHit();
+        }, 1000);
+    } else {
+        app.playerHit();
+    }
 }
 
 app.timeLine = () => {
@@ -65,61 +101,31 @@ app.timeLine = () => {
 
     if (app.timeElapsed === 100) {
         // app.spawnEnemy(100, 0)
-        app.spawnEnemy(220, 0);
+        app.spawnEnemy(220, 0, app.enemyType[0]);
 
         console.log('spawn enemy');
     } else if (app.timeElapsed === 2000) {
+        app.spawnEnemy(0, 0, app.enemyType[0]);
+        app.spawnEnemy(110, 0, app.enemyType[1]);
+        app.spawnEnemy(220, 0, app.enemyType[0]);
+        app.spawnEnemy(330, 0, app.enemyType[1]);
+
         // app.spawnEnemy(220, 0);
-        for (let i = 0; i < 20; i++) {
-            let xPos = app.random(500);
-            let yPos = app.random(50);
-            app.spawnEnemy(xPos, yPos);
-        }
+        // for (let i = 0; i < 20; i++) {
+        //     let xPos = app.random(500);
+        //     let yPos = app.random(50);
+        //     app.spawnEnemy(xPos, yPos);
+        // }
     }
 }
 
-app.random = (range) => Math.floor(Math.random() * range);
+app.scrollingBackground = () => {
+    app.scrollHeight++;
+    $(".gameScreen").css({
+        "background-position": `bottom -${app.scrollHeight}px left 0`
+    });
+    // console.log(scrollHeight);
 
-
-app.drawPlayer = () => {
-    $(".playerModel")
-        .css({
-            "left": `${app.playerCoords.x}px`,
-            "top": `${app.playerCoords.y}px`
-        });
-}
-
-app.checkPlayerBounds = () => {
-    if (app.playerCoords.x > 500) {
-        app.playerCoords.x -= 500;
-    } else if (app.playerCoords.x < 0) {
-        app.playerCoords.x += 500;
-    }
-
-    if (app.playerCoords.y > 500) {
-        app.playerCoords.y -= 500;
-    } else if (app.playerCoords.y < 0) {
-        app.playerCoords.y += 500;
-    }
-}
-
-app.playerMovement = () => {
-    if (app.key.down) {
-        app.playerCoords.y += app.stepSize;
-    } else if (app.key.up) {
-        app.playerCoords.y -= app.stepSize;
-    } else if (app.key.left) {
-        app.playerCoords.x -= app.stepSize;
-    } else if (app.key.right) {
-        app.playerCoords.x += app.stepSize;
-    }
-}
-
-app.showPlayerCoords = () => {
-    const xPos = app.playerCoords.x;
-    const yPos = app.playerCoords.y;
-
-    $(".playerCoords").text(`x:${xPos}, y:${yPos}`);
 }
 
 app.eventListener = () => {
@@ -160,6 +166,76 @@ app.keyUp = (e) => {
     } else if (e.key === "d") {
         app.key.right = false;
     }
+}
+
+app.random = (range) => Math.floor(Math.random() * range);
+
+app.updateScore = () => {
+    $(".score").text(`score: ${app.score}`);
+}
+
+app.spawnPlayer = () => {
+    app.playerCoords = {
+        x: 250,
+        y: 450,
+        height: 20,
+        width: 20,
+        hit: false
+    }
+    app.createHitBox(app.playerCoords);
+    console.log(app.playerCoords);
+
+}
+
+app.drawPlayer = () => {
+    $(".playerModel")
+        .css({
+            "left": `${app.playerCoords.x}px`,
+            "top": `${app.playerCoords.y}px`,
+            "height": `${app.playerCoords.height}px`,
+            "width": `${app.playerCoords.width}px`
+        });
+}
+
+app.checkPlayerBounds = () => {
+    if (app.playerCoords.x > 500) {
+        app.playerCoords.x -= 500;
+    } else if (app.playerCoords.x < 0) {
+        app.playerCoords.x += 500;
+    }
+
+    if (app.playerCoords.y > 500) {
+        app.playerCoords.y -= 500;
+    } else if (app.playerCoords.y < 0) {
+        app.playerCoords.y += 500;
+    }
+}
+app.playerHit = () => {
+    app.checkHit(app.playerCoords, app.enemies);
+}
+
+app.playerMovement = () => {
+    if (app.key.down) {
+        app.playerCoords.y += app.stepSize;
+        app.updateHitBox(app.playerCoords, 0, app.stepSize);
+    } else if (app.key.up) {
+        app.playerCoords.y -= app.stepSize;
+        app.updateHitBox(app.playerCoords, 0, -app.stepSize);
+    } else if (app.key.left) {
+        app.playerCoords.x -= app.stepSize;
+        app.updateHitBox(app.playerCoords, -app.stepSize, 0);
+    } else if (app.key.right) {
+        app.playerCoords.x += app.stepSize;
+        app.updateHitBox(app.playerCoords, app.stepSize, 0);
+    }
+
+}
+
+app.showPlayerCoords = () => {
+    const xPos = app.playerCoords.x;
+    const yPos = app.playerCoords.y;
+
+    $(".playerCoords").text(`x:${xPos}, y:${yPos}`);
 }
 
 app.makeProjectile = () => {
@@ -204,10 +280,10 @@ app.projectileMovement = () => {
             if (projectile.move && !projectile.hit) {
                 projectile.y -= 5;
                 app.drawProjectile(i);
-                app.updateHitBox(projectile, -5);
+                app.updateHitBox(projectile, 0, -5);
                 // console.log(projectile.points);
 
-                app.checkHit();
+                app.checkHit(projectile, app.enemies);
             } else if (projectile.hit) {
                 projectile.points.forEach((point) => {
                     point.y = -1;
@@ -230,9 +306,14 @@ app.deleteProjectile = () => {
             projectile.move = false;
         }
     });
+    app.enemies.forEach((enemy, i) => {
+        if (enemy.y > 500) {
+            $(`.enemy${i}`).remove();
+        }
+    });
 }
 
-app.spawnEnemy = (x, y) => {
+app.spawnEnemy = (x, y, enemyType) => {
     app.enemyCount++;
     let count = app.enemyCount;
 
@@ -240,8 +321,8 @@ app.spawnEnemy = (x, y) => {
         name: "enemy",
         x: x,
         y: y,
-        height: 20,
-        width: 100,
+        height: enemyType.height,
+        width: enemyType.width,
         hit: false
     };
 
@@ -249,6 +330,10 @@ app.spawnEnemy = (x, y) => {
 
     const $enemy = $("<div>")
         .addClass(`enemy enemy${count}`)
+        .css({
+            "height": `${enemyType.height}px`,
+            "width": `${enemyType.width}px`
+        });
     // .html("<h3>Hello</h3>");
     $(".gameScreen").append($enemy);
     // console.log('');
@@ -268,7 +353,7 @@ app.enemyMovement = () => {
 
         if (!enemy.hit) {
             enemy.y++;
-            app.updateHitBox(enemy, 1);
+            app.updateHitBox(enemy, 0, 1);
         } else {
             app.startHitAnimation(enemy, i);
 
@@ -288,12 +373,6 @@ app.enemyDeath = (entity, index) => {
     entity.points.forEach((point) => {
         point.y = -1;
     });
-    // app.projectiles.forEach((projectile, i) => {
-    //     if (projectile.y < 0) {
-    //         $(`.projectile${i}`).remove();
-    //         projectile.move = false;
-    //     }
-    // });
 }
 
 app.createHitBox = (entity) => {
@@ -314,43 +393,53 @@ app.createHitBox = (entity) => {
 
 }
 
-app.updateHitBox = (entity, step = 1) => {
+app.updateHitBox = (entity, stepX = 0, stepY = 1) => {
 
     entity.points.forEach((point) => {
-        point.y += step;
+        // console.log(point);
+        point.x += stepX;
+        point.y += stepY;
     })
 }
 
-app.checkHit = () => {
-    const hitBox1 = app.enemies;
-    const hitBox2 = app.projectiles;
+app.checkHit = (hitBox2, hitBox1) => {
+    // const hitBox1 = app.enemies;
+    // const hitBox2 = app.projectiles;
 
     // For each enemy
     hitBox1.forEach((enemy, i) => {
         // For each projectile
-        hitBox2.forEach((projectile, j) => {
-            if (projectile.points[0].y <= enemy.points[2].y &&
-                projectile.points[0].y >= enemy.points[0].y) {
+        // hitBox2.forEach((projectile, j) => {
+        if (hitBox2.points[0].y <= enemy.points[2].y &&
+            hitBox2.points[0].y >= enemy.points[0].y) {
 
-                // 1st Horizontal overlap
-                if (projectile.points[0].x >= enemy.points[0].x &&
-                    projectile.points[0].x <= enemy.points[1].x) {
-                    projectile.hit = true;
+            // 1st Horizontal overlap
+            if (hitBox2.points[0].x >= enemy.points[0].x &&
+                hitBox2.points[0].x <= enemy.points[1].x) {
+                if (hitBox2 != app.playerCoords) {
                     enemy.hit = true;
-                    // console.log('hit', j);
-
-
-                    // enemy.hit = Math.ceil(enemy.hit + 1 / 10);
-
-                    // 2nd Horizontal overlap
-                } else if (projectile.points[1].x >= enemy.points[0].x &&
-                    projectile.points[1].x <= enemy.points[1].x) {
-                    projectile.hit = true;
-                    // enemy.hit = Math.ceil(enemy.hit + 1 / 10);
-                    enemy.hit = true;
+                    app.score += 100;
+                    // console.log('hit');
                 }
+                console.log('ouch');
+                hitBox2.hit = true;
+
+
+                // enemy.hit = Math.ceil(enemy.hit + 1 / 10);
+
+                // 2nd Horizontal overlap
+            } else if (hitBox2.points[1].x >= enemy.points[0].x &&
+                hitBox2.points[1].x <= enemy.points[1].x) {
+                if (hitBox2 != app.playerCoords) {
+                    enemy.hit = true;
+                    app.score += 100;
+                    console.log('hit');
+                    // console.log('ouch');
+                }
+                hitBox2.hit = true;
             }
-        });
+        }
+        // });
     });
 }
 
