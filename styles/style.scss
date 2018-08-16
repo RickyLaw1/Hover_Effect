@@ -1,5 +1,6 @@
 @import "partials/setup";
 @import "partials/typography";
+$primary: rgb(0, 119, 255);
 
 * {
     margin: 0;
@@ -8,14 +9,82 @@
 
 html {
     font-size: 62.5%;
+    overflow: hidden;
 }
 
 .background {
     height: 100vh;
     background-color: black;
     display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.startScreen {
+    height: 500px;
+    width: 100%;
+    max-width: 500px;
+    background: black;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 20;
+    display: flex;
     justify-content: center;
     align-items: center;
+    h5 {
+        // position: relative;
+        // right: 100px;
+        top: calc(50% + 2px);
+        right: calc(50% + 5px);
+        color: rgb(0, 132, 255);
+        position: absolute;
+        transform: translate(50%, -50%);
+        pointer-events: none;
+        transition: 0.1s;
+    }
+}
+
+.play {
+    width: 100%;
+    height: 100px;
+    overflow: hidden;
+    position: relative;
+   
+}
+
+.playButton {
+    font-size: 60px;
+    animation: glow 5s infinite ease-in-out;
+    transition: 0.1s;
+    position: absolute;
+    right: 50%;
+    top: 50%;
+    transform: translate(50%, -50%);
+    // transform: translateX(50%);
+    color: rgb(223, 223, 223);
+    cursor: pointer;
+     &:hover{
+       transform: translate(50%, -50%) scale(1.1);
+        & + h5 {
+            transform: translate(50%, -50%) scale(1.1);
+            // display: block;
+            
+        }
+    } 
+}
+
+@keyframes glow {
+    0% {
+        // color: rgb(99, 99, 99);
+    }
+    50% {
+        text-shadow: 2px 1px 20px $primary;
+    }
+    100% {
+        // color: rgb(99, 99, 99);
+    }
 }
 
 .gameScreen {
@@ -24,9 +93,11 @@ html {
     background-size: cover;
     // background-position: bottom 0 left 0;
     height: 500px;
-    width: 500px;
+    width: 100%;
+    max-width: 500px;
     position: relative;
     overflow: hidden;
+    border: 1px solid rgb(0, 132, 255);
 }
 
 .score {
@@ -38,7 +109,6 @@ html {
 
 }
 
-
 .lives {
     position: absolute;
     bottom: 0;
@@ -49,6 +119,41 @@ html {
     }
     z-index: 10;
 }
+
+.mobileControls {
+    // position: absolute;
+    width: 100%;
+    color: rgba(255, 255, 255, 0.452);
+    display: flex;
+    justify-content: space-around;
+    // display: none;
+}
+
+@media (max-width:600px) {
+    // display: block;
+}
+
+.leftKey, .rightKey {
+    width: 50px;
+    height: 50px;
+    border: 1px solid rgb(0, 132, 255);
+    font-size: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.shootKey {
+    width: 150px;
+    height: 50px;
+    font-size: 20px;
+    border: 1px solid rgb(0, 132, 255);
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .playerModel {
     // width: 20px;
     // height: 20px;

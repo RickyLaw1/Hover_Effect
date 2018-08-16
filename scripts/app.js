@@ -4,6 +4,7 @@ app.init = () => {
     app.setup();
     window.requestAnimationFrame(app.gameLoop);
     app.eventListener();
+
 }
 
 app.setup = () => {
@@ -86,6 +87,8 @@ app.update = () => {
     app.playerMovement();
     app.deleteProjectile();
     app.enemyMovement();
+
+
     // When player is hit have 1 second of invincibility
     if (app.playerCoords.hit) {
 
@@ -126,6 +129,8 @@ app.scrollingBackground = () => {
 app.eventListener = () => {
     console.log('Event Listener');
     app.keyDetection();
+    app.mobileControls();
+    app.startHover();
 }
 
 app.keyDetection = () => {
@@ -137,6 +142,7 @@ app.keyDetection = () => {
         }
     });
 }
+
 app.keyDown = (e) => {
     if (e.key === "s") {
         app.key.down = true;
@@ -161,6 +167,37 @@ app.keyUp = (e) => {
     } else if (e.key === "d") {
         app.key.right = false;
     }
+}
+
+app.startHover = () => {
+    $(".playButton").on("mouseover", function () {
+        $(".gameScreen")
+            .css("box-shadow", "box-shadow: 2px 2px 20px 20px blue");
+        console.log('hover');
+
+    });
+}
+
+app.mobileControls = () => {
+    $(".shootKey").on("vmousedown", function () {
+        // console.log('click');
+        app.makeProjectile();
+    });
+    $(".leftKey").on("vmousedown vmouseup", function (e) {
+        if (e.type === "vmousedown") {
+            app.key.left = true;
+        } else {
+            app.key.left = false;
+        }
+    });
+    $(".rightKey").on("vmousedown vmouseup", function (e) {
+        if (e.type === "vmousedown") {
+            app.key.right = true;
+        } else {
+            app.key.right = false;
+        }
+        // console.log('click');
+    });
 }
 
 app.random = (range) => Math.floor(Math.random() * range);
@@ -357,7 +394,7 @@ app.enemyMovement = () => {
                 enemy.hit = false;
                 app.endHitAnimation(enemy, i);
                 app.enemyDeath(enemy, i);
-            }, 300);
+            }, 100);
 
         }
     });

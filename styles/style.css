@@ -151,9 +151,12 @@ h3 {
   line-height: 1.021; }
 
 h4 {
-  font-size: 2rem;
+  font-size: 1.8rem;
   text-transform: uppercase;
   line-height: 1.634; }
+
+h5 {
+  font-size: 1.3rem; }
 
 p {
   font-size: 2.4rem;
@@ -175,11 +178,34 @@ a {
   padding: 0; }
 
 html {
-  font-size: 62.5%; }
+  font-size: 62.5%;
+  overflow: hidden; }
 
 .background {
   height: 100vh;
   background-color: black;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -ms-flex-pack: distribute;
+  justify-content: space-around;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center; }
+
+.startScreen {
+  height: 500px;
+  width: 100%;
+  max-width: 500px;
+  background: black;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 20;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -189,15 +215,71 @@ html {
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center; }
+  .startScreen h5 {
+    top: calc(50% + 2px);
+    right: calc(50% + 5px);
+    color: #0084ff;
+    position: absolute;
+    -webkit-transform: translate(50%, -50%);
+    -ms-transform: translate(50%, -50%);
+    transform: translate(50%, -50%);
+    pointer-events: none;
+    -webkit-transition: 0.1s;
+    -o-transition: 0.1s;
+    transition: 0.1s; }
+
+.play {
+  width: 100%;
+  height: 100px;
+  overflow: hidden;
+  position: relative; }
+
+.playButton {
+  font-size: 60px;
+  -webkit-animation: glow 5s infinite ease-in-out;
+  animation: glow 5s infinite ease-in-out;
+  -webkit-transition: 0.1s;
+  -o-transition: 0.1s;
+  transition: 0.1s;
+  position: absolute;
+  right: 50%;
+  top: 50%;
+  -webkit-transform: translate(50%, -50%);
+  -ms-transform: translate(50%, -50%);
+  transform: translate(50%, -50%);
+  color: #dfdfdf;
+  cursor: pointer; }
+  .playButton:hover {
+    -webkit-transform: translate(50%, -50%) scale(1.1);
+    -ms-transform: translate(50%, -50%) scale(1.1);
+    transform: translate(50%, -50%) scale(1.1); }
+    .playButton:hover + h5 {
+      -webkit-transform: translate(50%, -50%) scale(1.1);
+      -ms-transform: translate(50%, -50%) scale(1.1);
+      transform: translate(50%, -50%) scale(1.1); }
+
+@-webkit-keyframes glow {
+  0% { }
+  50% {
+    text-shadow: 2px 1px 20px #0077ff; }
+  100% { } }
+
+@keyframes glow {
+  0% { }
+  50% {
+    text-shadow: 2px 1px 20px #0077ff; }
+  100% { } }
 
 .gameScreen {
   border: 1px solid #000;
   background: url(../assets/space.jpg);
   background-size: cover;
   height: 500px;
-  width: 500px;
+  width: 100%;
+  max-width: 500px;
   position: relative;
-  overflow: hidden; }
+  overflow: hidden;
+  border: 1px solid #0084ff; }
 
 .score {
   color: rgba(255, 255, 255, 0.322);
@@ -213,6 +295,46 @@ html {
   z-index: 10; }
   .lives i {
     font-size: 20px; }
+
+.mobileControls {
+  width: 100%;
+  color: rgba(255, 255, 255, 0.452);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+  justify-content: space-around; }
+
+.leftKey, .rightKey {
+  width: 50px;
+  height: 50px;
+  border: 1px solid #0084ff;
+  font-size: 25px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center; }
+
+.shootKey {
+  width: 150px;
+  height: 50px;
+  font-size: 20px;
+  border: 1px solid #0084ff;
+  text-align: center;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center; }
 
 .playerModel {
   border: 1px solid white;
