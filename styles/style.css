@@ -202,13 +202,15 @@ html {
 .score {
   color: rgba(255, 255, 255, 0.322);
   position: absolute;
-  bottom: 0; }
+  bottom: 0;
+  z-index: 10; }
 
 .lives {
   position: absolute;
   bottom: 0;
   right: 5px;
-  color: red; }
+  color: red;
+  z-index: 10; }
   .lives i {
     font-size: 20px; }
 
@@ -228,7 +230,8 @@ html {
   left: 50px;
   border: 1px solid purple;
   text-align: center;
-  z-index: 10; }
+  z-index: 10;
+  font-size: 15px; }
 
 .enemy {
   color: blue;

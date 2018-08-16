@@ -21,6 +21,7 @@ app.setup = () => {
     };
 
     app.score = 0;
+    app.lives = 3;
     app.spawnPlayer();
 
     app.projectiles = [];
@@ -87,8 +88,11 @@ app.update = () => {
     app.enemyMovement();
     // When player is hit have 1 second of invincibility
     if (app.playerCoords.hit) {
-        let delay = window.setTimeout(function () {
+
+        const delay = window.setTimeout(function () {
+
             app.playerCoords.hit = false;
+
             app.playerHit();
         }, 1000);
     } else {
@@ -101,7 +105,7 @@ app.timeLine = () => {
 
     if (app.timeElapsed === 100) {
         // app.spawnEnemy(100, 0)
-        app.spawnEnemy(220, 0, app.enemyType[0]);
+        app.spawnEnemy(220, 0, app.enemyType[1]);
 
         console.log('spawn enemy');
     } else if (app.timeElapsed === 2000) {
@@ -109,13 +113,6 @@ app.timeLine = () => {
         app.spawnEnemy(110, 0, app.enemyType[1]);
         app.spawnEnemy(220, 0, app.enemyType[0]);
         app.spawnEnemy(330, 0, app.enemyType[1]);
-
-        // app.spawnEnemy(220, 0);
-        // for (let i = 0; i < 20; i++) {
-        //     let xPos = app.random(500);
-        //     let yPos = app.random(50);
-        //     app.spawnEnemy(xPos, yPos);
-        // }
     }
 }
 
@@ -124,8 +121,6 @@ app.scrollingBackground = () => {
     $(".gameScreen").css({
         "background-position": `bottom -${app.scrollHeight}px left 0`
     });
-    // console.log(scrollHeight);
-
 }
 
 app.eventListener = () => {
@@ -180,7 +175,8 @@ app.spawnPlayer = () => {
         y: 450,
         height: 20,
         width: 20,
-        hit: false
+        hit: false,
+        hitsTaken: 0
     }
     app.createHitBox(app.playerCoords);
     console.log(app.playerCoords);
@@ -245,7 +241,7 @@ app.makeProjectile = () => {
     const $projectile = $("<div>")
         .addClass(`projectile projectile${count}`)
         .text(``)
-        .css("background-color", `rgb(${app.random(255)}, ${app.random(255)}, ${app.random(255)}`);
+        .css("color", `rgb(${app.random(255)}, ${app.random(255)}, ${app.random(255)}`);
 
     $(".gameScreen").append($projectile);
 
@@ -253,8 +249,8 @@ app.makeProjectile = () => {
     app.projectiles[count] = {
         x: app.playerCoords.x,
         y: app.playerCoords.y,
-        height: 20,
-        width: 11,
+        height: 25,
+        width: 15,
         move: true,
         hit: false
     };
@@ -336,7 +332,6 @@ app.spawnEnemy = (x, y, enemyType) => {
         });
     // .html("<h3>Hello</h3>");
     $(".gameScreen").append($enemy);
-    // console.log('');
 }
 
 app.drawEnemy = () => {
@@ -351,7 +346,7 @@ app.drawEnemy = () => {
 app.enemyMovement = () => {
     app.enemies.forEach((enemy, i) => {
 
-        if (!enemy.hit) {
+        if (!enemy.hit && enemy.y < 500) {
             enemy.y++;
             app.updateHitBox(enemy, 0, 1);
         } else {
@@ -385,12 +380,6 @@ app.createHitBox = (entity) => {
         { x: entity.x, y: entity.y + height },
         { x: entity.x + width, y: entity.y + height }
     ];
-    // console.log(entity.points[0].y);
-    // console.log(entity.points[1].y);
-    // console.log(entity.points[2].y);
-    // console.log(entity.points[3].y);
-    // console.log(app.projectiles.points);
-
 }
 
 app.updateHitBox = (entity, stepX = 0, stepY = 1) => {
@@ -403,9 +392,6 @@ app.updateHitBox = (entity, stepX = 0, stepY = 1) => {
 }
 
 app.checkHit = (hitBox2, hitBox1) => {
-    // const hitBox1 = app.enemies;
-    // const hitBox2 = app.projectiles;
-
     // For each enemy
     hitBox1.forEach((enemy, i) => {
         // For each projectile
@@ -419,13 +405,17 @@ app.checkHit = (hitBox2, hitBox1) => {
                 if (hitBox2 != app.playerCoords) {
                     enemy.hit = true;
                     app.score += 100;
-                    // console.log('hit');
+                } else {
+                    hitBox2.hitsTaken++;
+                    console.log(hitBox2.hitsTaken);
+                    app.loseLife();
+                    console.log(`enemy#${i}:(${enemy.points[0].x}, ${enemy.points[0].y})`)
                 }
-                console.log('ouch');
+                console.log(enemy);
+
+
+                // console.log('ouch');
                 hitBox2.hit = true;
-
-
-                // enemy.hit = Math.ceil(enemy.hit + 1 / 10);
 
                 // 2nd Horizontal overlap
             } else if (hitBox2.points[1].x >= enemy.points[0].x &&
@@ -433,8 +423,6 @@ app.checkHit = (hitBox2, hitBox1) => {
                 if (hitBox2 != app.playerCoords) {
                     enemy.hit = true;
                     app.score += 100;
-                    console.log('hit');
-                    // console.log('ouch');
                 }
                 hitBox2.hit = true;
             }
@@ -443,8 +431,14 @@ app.checkHit = (hitBox2, hitBox1) => {
     });
 }
 
+app.loseLife = () => {
+
+    const hitCount = app.playerCoords.hitsTaken;
+    console.log(`.life${hitCount}`);
+    $(`.life${hitCount}`).css("color", "black");
+}
+
 app.startHitAnimation = (entity, index) => {
-    // console.log();
     $(`.${entity.name + index}`).addClass("hitAnimation");
 }
 app.endHitAnimation = (entity, index) => {

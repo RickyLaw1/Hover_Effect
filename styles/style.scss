@@ -33,6 +33,7 @@ html {
     color: rgba(255, 255, 255, 0.322);
     position: absolute;
     bottom: 0;
+    z-index: 10;
     // transform: translateY(100%);
 
 }
@@ -46,6 +47,7 @@ html {
        i {
         font-size: 20px;
     }
+    z-index: 10;
 }
 .playerModel {
     // width: 20px;
@@ -70,6 +72,7 @@ html {
     border: 1px solid purple;
     text-align: center;
     z-index: 10;
+    font-size: 15px;
     // background-color: white;
 }
 
