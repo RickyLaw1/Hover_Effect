@@ -65,8 +65,8 @@ app.gameLoop = (timestamp) => {
     app.showPlayerCoords();
     app.updateScore();
 
-    app.scrollingBackground();
-    app.timeLine();
+    // app.scrollingBackground();
+    // app.timeLine();
 
     if (app.shoot) {
 
@@ -170,11 +170,23 @@ app.keyUp = (e) => {
 }
 
 app.startHover = () => {
-    $(".playButton").on("mouseover", function () {
-        $(".gameScreen")
-            .css("box-shadow", "box-shadow: 2px 2px 20px 20px blue");
-        console.log('hover');
 
+    $(".playButton").on("mouseover mouseout", function (e) {
+
+        if (e.type === "mouseover") {
+            $(".gameScreen")
+                .css("box-shadow", "2px 2px 40px 1px rgb(0, 119, 255)");
+        } else {
+            $(".gameScreen")
+                .css("box-shadow", "0px 0px 0px 0px rgb(0, 119, 255)");
+        }
+
+    });
+
+    $(".playButton").on("click", function () {
+        console.log('click!');
+        $(".pointerIcon").css("right", "10px");
+        // <i class="fa fal fa-mouse-pointer"></i>
     });
 }
 
