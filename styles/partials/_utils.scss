@@ -1,0 +1,16 @@
+$xPadding: 80px;
+
+@mixin position($type, $top:auto, $right:auto, $bottom:auto, $left:auto) {
+    position: $type;
+    top: $top;
+    right: $right;
+    bottom: $bottom;
+    left: $left;
+}
+@mixin flex($flexDirection:auto, $justifyContent:auto, $alignItems:auto, $flexWrap:auto) {
+    display: flex;
+    flex-direction: $flexDirection;
+    justify-content: $justifyContent;
+    align-items: $alignItems;
+    flex-wrap: $flexWrap;
+}

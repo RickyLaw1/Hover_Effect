@@ -200,7 +200,7 @@ html {
   -o-transition: 0.3s;
   transition: 0.3s; }
 
-.startScreen {
+.start-screen {
   height: 500px;
   width: 100%;
   max-width: 500px;
@@ -218,7 +218,7 @@ html {
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center; }
-  .startScreen h5 {
+  .start-screen h5 {
     top: calc(50% + 2px);
     right: calc(50% + 5px);
     color: #0084ff;
@@ -234,10 +234,10 @@ html {
 
 .play {
   width: 100%;
-  height: 100px;
+  height: 200px;
   overflow: hidden;
   position: relative; }
-  .play .pointerIcon {
+  .play .pointer-icon {
     font-size: 20px;
     color: white;
     position: absolute;
@@ -246,14 +246,14 @@ html {
     -webkit-transform: translate(51%, -50%) rotate(110deg);
     -ms-transform: translate(51%, -50%) rotate(110deg);
     transform: translate(51%, -50%) rotate(110deg);
-    -webkit-transition: 0.8s linear;
-    -o-transition: 0.8s linear;
-    transition: 0.8s linear; }
+    -webkit-transition: 0.7s linear;
+    -o-transition: 0.7s linear;
+    transition: 0.7s linear; }
 
-.playButton {
+.play-button {
   font-size: 60px;
-  -webkit-animation: glow1 5s infinite ease-in-out;
-  animation: glow1 5s infinite ease-in-out;
+  -webkit-animation: glow1 4s infinite ease-in-out;
+  animation: glow1 4s infinite ease-in-out;
   -webkit-transition: 0.1s;
   -o-transition: 0.1s;
   transition: 0.1s;
@@ -266,19 +266,19 @@ html {
   color: #dfdfdf;
   z-index: 10;
   cursor: pointer; }
-  .playButton:hover {
+  .play-button:hover {
     -webkit-transform: translate(50%, -50%) scale(1.1);
     -ms-transform: translate(50%, -50%) scale(1.1);
     transform: translate(50%, -50%) scale(1.1); }
-    .playButton:hover + h5 {
+    .play-button:hover + h5 {
       -webkit-transform: translate(50%, -50%) scale(1.1);
       -ms-transform: translate(50%, -50%) scale(1.1);
       transform: translate(50%, -50%) scale(1.1); }
-  .playButton:active {
+  .play-button:active {
     -webkit-transform: translate(50%, -50%) scale(1);
     -ms-transform: translate(50%, -50%) scale(1);
     transform: translate(50%, -50%) scale(1); }
-    .playButton:active + h5 {
+    .play-button:active + h5 {
       -webkit-transform: translate(50%, -50%) scale(1);
       -ms-transform: translate(50%, -50%) scale(1);
       transform: translate(50%, -50%) scale(1); }
@@ -286,30 +286,16 @@ html {
 @-webkit-keyframes glow1 {
   0% { }
   50% {
-    text-shadow: 2px 1px 20px #0077ff; }
+    text-shadow: 2px 1px 80px #0077ff; }
   100% { } }
 
 @keyframes glow1 {
   0% { }
   50% {
-    text-shadow: 2px 1px 20px #0077ff; }
+    text-shadow: 2px 1px 80px #0077ff; }
   100% { } }
 
-@-webkit-keyframes glow2 {
-  100% {
-    -webkit-box-shadow: 2px 2px 40px 1px #0077ff;
-    box-shadow: 2px 2px 40px 1px #0077ff; } }
-
-@keyframes glow2 {
-  100% {
-    -webkit-box-shadow: 2px 2px 40px 1px #0077ff;
-    box-shadow: 2px 2px 40px 1px #0077ff; } }
-
-.boxGlow {
-  -webkit-animation: glow2 0.3s ease-in-out;
-  animation: glow2 0.3s ease-in-out; }
-
-.gameScreen {
+.game-screen {
   border: 1px solid #000;
   background: url(../assets/space.jpg);
   background-size: cover;
@@ -335,7 +321,7 @@ html {
   .lives i {
     font-size: 20px; }
 
-.mobileControls {
+.mobile-controls {
   width: 100%;
   color: rgba(255, 255, 255, 0.452);
   display: -webkit-box;
@@ -343,9 +329,13 @@ html {
   display: flex;
   -ms-flex-pack: distribute;
   justify-content: space-around;
-  display: none; }
+  visibility: hidden; }
 
-.leftKey, .rightKey {
+@media (max-width: 600px) {
+  .mobile-controls {
+    visibility: visible; } }
+
+.left-key, .right-key {
   width: 50px;
   height: 50px;
   border: 1px solid #0084ff;
@@ -360,7 +350,7 @@ html {
   -ms-flex-pack: center;
   justify-content: center; }
 
-.shootKey {
+.shoot-key {
   width: 150px;
   height: 50px;
   font-size: 20px;
@@ -376,11 +366,20 @@ html {
   -ms-flex-align: center;
   align-items: center; }
 
-.playerModel {
-  border: 1px solid white;
-  position: absolute; }
+.player-model {
+  position: absolute;
+  text-align: center; }
+  .player-model i {
+    position: relative;
+    top: 10px;
+    left: -12px;
+    color: white;
+    font-size: 30px;
+    -webkit-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    transform: rotate(-90deg); }
 
-.playerCoords {
+.player-coords {
   position: absolute;
   top: 0;
   left: 0;
@@ -390,23 +389,125 @@ html {
   position: absolute;
   top: 0;
   left: 50px;
-  border: 1px solid purple;
   text-align: center;
   z-index: 10;
-  font-size: 15px; }
+  font-size: 15px;
+  text-shadow: 1px 1px 5px cyan; }
 
 .enemy {
-  color: blue;
-  border: 1px solid purple;
-  background-color: #e481ce;
   position: absolute;
-  -webkit-transition: background-color 0.1s, -webkit-transform 0.1s;
-  transition: background-color 0.1s, -webkit-transform 0.1s;
-  -o-transition: background-color 0.1s, transform 0.1s;
-  transition: background-color 0.1s, transform 0.1s;
-  transition: background-color 0.1s, transform 0.1s, -webkit-transform 0.1s; }
+  -webkit-transition: color 0.1s, -webkit-transform 0.1s;
+  transition: color 0.1s, -webkit-transform 0.1s;
+  -o-transition: color 0.1s, transform 0.1s;
+  transition: color 0.1s, transform 0.1s;
+  transition: color 0.1s, transform 0.1s, -webkit-transform 0.1s; }
 
-.hitAnimation {
-  background-color: red;
+.welcome-enemy {
+  color: white;
+  background-color: gray;
+  text-align: center; }
+
+.nav-enemy {
+  color: white; }
+
+.gallery-enemy {
+  position: relative; }
+  .gallery-enemy figcaption {
+    position: absolute;
+    color: white;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    text-align: center;
+    padding-top: 30%;
+    background-color: rgba(0, 0, 0, 0.767);
+    display: none; }
+
+.button-enemy {
+  border: 1px solid #2a2a2a;
+  border-radius: 40px;
+  background-color: gray;
+  color: white;
+  padding: 5px 40px 2px 40px;
+  letter-spacing: 2px;
+  overflow: hidden;
+  position: relative; }
+  .button-enemy .button-text {
+    -webkit-transition: -webkit-transform 0.3s;
+    transition: -webkit-transform 0.3s;
+    -o-transition: transform 0.3s;
+    transition: transform 0.3s;
+    transition: transform 0.3s, -webkit-transform 0.3s; }
+  .button-enemy .icon {
+    position: absolute;
+    top: 50%;
+    right: -27px;
+    bottom: auto;
+    left: auto;
+    -webkit-transform: translateY(calc(-50% + 1px));
+    -ms-transform: translateY(calc(-50% + 1px));
+    transform: translateY(calc(-50% + 1px));
+    -webkit-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s; }
+
+.airplane-enemy {
+  font-size: 30px;
+  color: white;
+  -webkit-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg); }
+
+.camera-enemy {
+  font-size: 60px;
+  color: darkslategray; }
+
+.hit-animation-welcome {
   color: purple;
   text-decoration: underline; }
+
+.hit-animation-nav {
+  color: #0077ff;
+  text-decoration: underline; }
+
+.hit-animation-gallery figcaption {
+  display: block; }
+
+.hit-animation-button {
+  background-color: white;
+  color: #2a2a2a; }
+  .hit-animation-button .button-text {
+    -webkit-transform: translateX(-20px);
+    -ms-transform: translateX(-20px);
+    transform: translateX(-20px); }
+  .hit-animation-button .icon {
+    right: 20px;
+    font-size: 2rem; }
+
+.hit-animation-plane {
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+  color: #0077ff; }
+
+.game-over {
+  height: 500px;
+  width: 100%;
+  max-width: 500px;
+  background: rgba(0, 119, 255, 0.363);
+  color: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 30;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  visibility: hidden; }

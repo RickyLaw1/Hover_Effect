@@ -4,12 +4,12 @@ app.init = () => {
     app.setup();
     window.requestAnimationFrame(app.gameLoop);
     app.eventListener();
-
 }
 
 app.setup = () => {
     app.windowWidth = $(window).width();
     app.timeElapsed = 0;
+    app.gameStarted = false;
     app.stepSize = 5;
 
     app.lastRender = 0;
@@ -33,49 +33,155 @@ app.setup = () => {
 
     app.enemyType = [
         {
-            name: "enemy1",
-            height: 20,
-            width: 100
+            name: "welcome",
+            height: 25,
+            width: 400,
+            html: `<h4>Welcome to HoverEffect ©<h4>`,
+            cssClass: "welcome-enemy",
+            animationClass: "hit-animation-welcome",
+            delay: 200,
+            health: 1
         },
         {
-            name: "enemy2",
-            height: 100,
-            width: 100
+            name: "aboutNav",
+            height: 20,
+            width: 100,
+            html: `<h4>ABOUT US<h4>`,
+            cssClass: "nav-enemy",
+            animationClass: "hit-animation-nav",
+            delay: 200,
+            health: 1
         },
         {
-            name: "enemy3",
+            name: "bookingNav",
             height: 20,
-            width: 100
+            width: 100,
+            html: `<h4>BOOKINGS<h4>`,
+            cssClass: "nav-enemy",
+            animationClass: "hit-animation-nav",
+            delay: 200,
+            health: 1
         },
         {
-            name: "enemy4",
+            name: "blogNav",
             height: 20,
-            width: 100
+            width: 60,
+            html: `<h4>BLOG<h4>`,
+            cssClass: "nav-enemy",
+            animationClass: "hit-animation-nav",
+            delay: 200,
+            health: 1
         },
-    ];
+        {
+            name: "galleryNav",
+            height: 20,
+            width: 75,
+            html: `<h4>gallery<h4>`,
+            cssClass: "nav-enemy",
+            animationClass: "hit-animation-nav",
+            delay: 200,
+            health: 1
+        },
+        {
+            name: "home",
+            height: 20,
+            width: 50,
+            html: `<h4>home<h4>`,
+            cssClass: "nav-enemy",
+            animationClass: "hit-animation-nav",
+            delay: 200,
+            health: 1
+        },
+        {
+            name: "galleryPic1",
+            height: 289,
+            width: 361,
+            html:
+                `<figure>
+                    <img src="assets/galleryPic1.jpeg" alt="">
+                    <figcaption><h4>i love hovers</h4></figcaption>
+                </figure>`,
+            cssClass: "gallery-enemy",
+            animationClass: "hit-animation-gallery",
+            delay: 300,
+            health: 30
+        },
+        {
+            name: "galleryPic2",
+            height: 289,
+            width: 361,
+            html:
+                `<figure>
+                    <img src="assets/galleryPic2.jpeg" alt="">
+                    <figcaption><h4>go away prepos</h4></figcaption>
+                </figure>`,
+            cssClass: "gallery-enemy",
+            animationClass: "hit-animation-gallery",
+            delay: 300,
+            health: 30
+        },
+        {
+            name: "button",
+            height: 40,
+            width: 140,
+            html:
+                `<h4>
+                    <div class="button-text">Start</div>
+                    <div class="icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                </h4>`,
+            cssClass: "button-enemy",
+            animationClass: "hit-animation-button",
+            delay: 250,
+            health: 10
+        },
+        {
+            name: "airplane",
+            height: 40,
+            width: 40,
+            html:
+                `<i class="fas fa-plane"></i>`,
+            cssClass: "airplane-enemy",
+            animationClass: "hit-animation-plane",
+            delay: 250,
+            health: 2
+        },
+        {
+            name: "camera",
+            height: 60,
+            width: 60,
+            html:
+                `<i class="fas fa-camera"></i>`,
+            cssClass: "camera-enemy",
+            animationClass: "hit-animation-camera",
+            delay: 250,
+            health: 200
+        },
 
+    ];
     app.scrollHeight = 0;
 }
 
 app.gameLoop = (timestamp) => {
     let progress = timestamp - app.lastRender;
 
-    app.update(progress);
-    app.drawPlayer();
-    app.showPlayerCoords();
-    app.updateScore();
+    if (app.gameStarted) {
+        app.update(progress);
 
-    // app.scrollingBackground();
-    // app.timeLine();
+        app.drawPlayer();
+        app.showPlayerCoords();
+        app.scrollingBackground();
+        app.timeLine();
+        app.updateScore();
+    }
 
     if (app.shoot) {
-
         app.projectileMovement();
     }
 
-    if (app.enemyCount > 0) {
+    if (app.enemies.length > 0) {
         app.drawEnemy();
-
     }
 
     app.lastRender = timestamp;
@@ -87,7 +193,6 @@ app.update = () => {
     app.playerMovement();
     app.deleteProjectile();
     app.enemyMovement();
-
 
     // When player is hit have 1 second of invincibility
     if (app.playerCoords.hit) {
@@ -106,22 +211,39 @@ app.update = () => {
 app.timeLine = () => {
     app.timeElapsed += 10;
 
-    if (app.timeElapsed === 100) {
-        // app.spawnEnemy(100, 0)
-        app.spawnEnemy(220, 0, app.enemyType[1]);
-
-        console.log('spawn enemy');
-    } else if (app.timeElapsed === 2000) {
-        app.spawnEnemy(0, 0, app.enemyType[0]);
-        app.spawnEnemy(110, 0, app.enemyType[1]);
-        app.spawnEnemy(220, 0, app.enemyType[0]);
-        app.spawnEnemy(330, 0, app.enemyType[1]);
+    if (app.timeElapsed === 3000) {
+        app.spawnEnemy(15, -20, app.enemyType[0]);
+        // app.spawnEnemy(15, -20, app.enemyType[10]);
+    }
+    else if (app.timeElapsed === 8000) {
+        app.spawnEnemy(50, 0, app.enemyType[1]);
+        app.spawnEnemy(50, -40, app.enemyType[2]);
+        app.spawnEnemy(50, -80, app.enemyType[3]);
+        app.spawnEnemy(50, -120, app.enemyType[4]);
+        app.spawnEnemy(50, -160, app.enemyType[5]);
+    } else if (app.timeElapsed === 13000) {
+        app.spawnEnemy(20, -290, app.enemyType[6]);
+    } else if (app.timeElapsed === 22000) {
+        app.spawnEnemy(20, -290, app.enemyType[7]);
+    } else if (app.timeElapsed === 28000) {
+        app.spawnEnemy(200, 20, app.enemyType[8]);
+    } else if (app.timeElapsed === 32000) {
+        let xPlane = 15;
+        for (let i = 0; i < 8; i++) {
+            app.spawnEnemy(xPlane, -20, app.enemyType[9]);
+            xPlane += 60;
+        }
+        xPlane = 15;
+        for (let i = 0; i < 8; i++) {
+            app.spawnEnemy(xPlane, -80, app.enemyType[9]);
+            xPlane += 60;
+        }
     }
 }
 
 app.scrollingBackground = () => {
     app.scrollHeight++;
-    $(".gameScreen").css({
+    $(".game-screen").css({
         "background-position": `bottom -${app.scrollHeight}px left 0`
     });
 }
@@ -130,7 +252,7 @@ app.eventListener = () => {
     console.log('Event Listener');
     app.keyDetection();
     app.mobileControls();
-    app.startHover();
+    app.playClick();
 }
 
 app.keyDetection = () => {
@@ -144,65 +266,62 @@ app.keyDetection = () => {
 }
 
 app.keyDown = (e) => {
-    if (e.key === "s") {
+    if (e.key === "ArrowDown") {
         app.key.down = true;
-    } else if (e.key === "w") {
+    } else if (e.key === "ArrowUp") {
         app.key.up = true;
-    } else if (e.key === "a") {
+    } else if (e.key === "ArrowLeft") {
         app.key.left = true;
-    } else if (e.key === "d") {
+    } else if (e.key === "ArrowRight") {
         app.key.right = true;
     } else if (e.key === " ") {
-
         app.makeProjectile();
     }
 }
 app.keyUp = (e) => {
-    if (e.key === "s") {
+    if (e.key === "ArrowDown") {
         app.key.down = false;
-    } else if (e.key === "w") {
+    } else if (e.key === "ArrowUp") {
         app.key.up = false;
-    } else if (e.key === "a") {
+    } else if (e.key === "ArrowLeft") {
         app.key.left = false;
-    } else if (e.key === "d") {
+    } else if (e.key === "ArrowRight") {
         app.key.right = false;
     }
 }
 
-app.startHover = () => {
-
-    $(".playButton").on("mouseover mouseout", function (e) {
-
-        if (e.type === "mouseover") {
-            $(".gameScreen")
-                .css("box-shadow", "2px 2px 40px 1px rgb(0, 119, 255)");
-        } else {
-            $(".gameScreen")
-                .css("box-shadow", "0px 0px 0px 0px rgb(0, 119, 255)");
-        }
-
-    });
-
-    $(".playButton").on("click", function () {
+app.playClick = () => {
+    $(".play-button").on("click", function () {
         console.log('click!');
-        $(".pointerIcon").css("right", "10px");
-        // <i class="fa fal fa-mouse-pointer"></i>
+        $(".pointer-icon").css("right", "10px");
+        let delay = setTimeout(function () {
+            $(".game-screen")
+                .css("box-shadow", "2px 2px 40px 1px rgb(0, 119, 255)");
+            app.startGame();
+        }, 700);
     });
 }
 
+app.startGame = () => {
+    $(".start-screen").fadeOut(3000);
+    app.gameStarted = true;
+    console.log('startGame');
+
+}
+
 app.mobileControls = () => {
-    $(".shootKey").on("vmousedown", function () {
+    $(".shoot-key").on("vmousedown", function () {
         // console.log('click');
         app.makeProjectile();
     });
-    $(".leftKey").on("vmousedown vmouseup", function (e) {
+    $(".left-key").on("vmousedown vmouseup", function (e) {
         if (e.type === "vmousedown") {
             app.key.left = true;
         } else {
             app.key.left = false;
         }
     });
-    $(".rightKey").on("vmousedown vmouseup", function (e) {
+    $(".right-key").on("vmousedown vmouseup", function (e) {
         if (e.type === "vmousedown") {
             app.key.right = true;
         } else {
@@ -214,26 +333,25 @@ app.mobileControls = () => {
 
 app.random = (range) => Math.floor(Math.random() * range);
 
-app.updateScore = () => {
-    $(".score").text(`score: ${app.score}`);
-}
+app.updateScore = () => $(".score").text(`score: ${app.score}`);
 
 app.spawnPlayer = () => {
     app.playerCoords = {
         x: 250,
         y: 450,
-        height: 20,
-        width: 20,
+        height: 40,
+        width: 30,
         hit: false,
         hitsTaken: 0
     }
+    $(".player-model").append(`<i class="fas fa-space-shuttle"></i>`);
+
     app.createHitBox(app.playerCoords);
-    console.log(app.playerCoords);
 
 }
 
 app.drawPlayer = () => {
-    $(".playerModel")
+    $(".player-model")
         .css({
             "left": `${app.playerCoords.x}px`,
             "top": `${app.playerCoords.y}px`,
@@ -280,19 +398,23 @@ app.showPlayerCoords = () => {
     const xPos = app.playerCoords.x;
     const yPos = app.playerCoords.y;
 
-    $(".playerCoords").text(`x:${xPos}, y:${yPos}`);
+    $(".player-coords").text(`x:${xPos}, y:${yPos}`);
 }
 
 app.makeProjectile = () => {
     app.projectileCount++;
     count = app.projectileCount;
-    // const $projectile = $(`<i class="fa fal fa-mouse-pointer"></i>`)
-    const $projectile = $("<div>")
+    let ranColour = `hsl(${app.random(360)}, 100%, 65%)`;
+    const $projectile = $(`<i class="fa fal fa-mouse-pointer"></i>`)
+        // const $projectile = $("<div>")
         .addClass(`projectile projectile${count}`)
         .text(``)
-        .css("color", `rgb(${app.random(255)}, ${app.random(255)}, ${app.random(255)}`);
+        .css({
+            "color": ranColour,
+            "text-shadow": `1px 1px 15px ${ranColour}`
+        });
 
-    $(".gameScreen").append($projectile);
+    $(".game-screen").append($projectile);
 
     // Set projectile coordinates to player coordinates
     app.projectiles[count] = {
@@ -360,36 +482,45 @@ app.deleteProjectile = () => {
 
 app.spawnEnemy = (x, y, enemyType) => {
     app.enemyCount++;
-    let count = app.enemyCount;
-
+    let count = app.enemies.length;
+    // console.log(count);
     app.enemies[count] = {
         name: "enemy",
+        id: app.enemyCount,
         x: x,
         y: y,
         height: enemyType.height,
         width: enemyType.width,
-        hit: false
+        hit: false,
+        animation: enemyType.animationClass,
+        delay: enemyType.delay,
+        health: enemyType.health
     };
+
+    console.log(app.enemies[count].id);
+
 
     app.createHitBox(app.enemies[count]);
 
     const $enemy = $("<div>")
-        .addClass(`enemy enemy${count}`)
+        .addClass(`enemy enemy${app.enemies[count].id}`)
+        .addClass(enemyType.cssClass)
         .css({
             "height": `${enemyType.height}px`,
-            "width": `${enemyType.width}px`
-        });
+            "width": `${enemyType.width}px`,
+        })
+        .append(enemyType.html);
     // .html("<h3>Hello</h3>");
-    $(".gameScreen").append($enemy);
+    $(".game-screen").append($enemy);
 }
 
 app.drawEnemy = () => {
-    for (let i = 1; i < app.enemyCount + 1; i++) {
-        $(`.enemy${i}`).css({
+    app.enemies.forEach((enemy, i) => {
+        $(`.enemy${enemy.id}`).css({
             "top": `${app.enemies[i].y}px`,
             "left": `${app.enemies[i].x}px`
         });
-    }
+    });
 }
 
 app.enemyMovement = () => {
@@ -398,24 +529,39 @@ app.enemyMovement = () => {
         if (!enemy.hit && enemy.y < 500) {
             enemy.y++;
             app.updateHitBox(enemy, 0, 1);
-        } else {
+        }
+        else if (enemy.y >= 500) {
+            app.enemyDeath(enemy, i);
+        }
+        else {
             app.startHitAnimation(enemy, i);
 
             let hitDelay = window.setTimeout(function () {
                 // console.log(enemy.hit);
                 enemy.hit = false;
+                if (enemy.hit) {
+                    clearTimeout(hitDelay);
+                    console.log('hit again');
+                }
                 app.endHitAnimation(enemy, i);
-                app.enemyDeath(enemy, i);
-            }, 100);
-
+                if (enemy.health <= 0) {
+                    app.enemyDeath(enemy, i);
+                }
+            }, enemy.delay);
         }
     });
 }
 
 app.enemyDeath = (entity, index) => {
-    $(`.enemy${index}`).remove();
+    $(`.enemy${entity.id}`).remove();
+    // console.log(`enemy${entity.id}`);
+
+    app.enemies = app.enemies.filter((enemy) => {
+        return enemy != entity;
+    });
+
     entity.points.forEach((point) => {
-        point.y = -1;
+        point.y = -10;
     });
 }
 
@@ -453,17 +599,12 @@ app.checkHit = (hitBox2, hitBox1) => {
                 hitBox2.points[0].x <= enemy.points[1].x) {
                 if (hitBox2 != app.playerCoords) {
                     enemy.hit = true;
+                    enemy.health--;
                     app.score += 100;
                 } else {
                     hitBox2.hitsTaken++;
-                    console.log(hitBox2.hitsTaken);
                     app.loseLife();
-                    console.log(`enemy#${i}:(${enemy.points[0].x}, ${enemy.points[0].y})`)
                 }
-                console.log(enemy);
-
-
-                // console.log('ouch');
                 hitBox2.hit = true;
 
                 // 2nd Horizontal overlap
@@ -476,27 +617,33 @@ app.checkHit = (hitBox2, hitBox1) => {
                 hitBox2.hit = true;
             }
         }
-        // });
     });
 }
 
 app.loseLife = () => {
 
     const hitCount = app.playerCoords.hitsTaken;
-    console.log(`.life${hitCount}`);
+    // console.log(`.life${hitCount}`);
     $(`.life${hitCount}`).css("color", "black");
+
+    if (app.playerCoords.hitsTaken >= 3) {
+        app.gameStarted = false;
+        app.gameOver();
+    }
 }
 
 app.startHitAnimation = (entity, index) => {
-    $(`.${entity.name + index}`).addClass("hitAnimation");
+    $(`.${entity.name + entity.id}`).addClass(entity.animation);
 }
 app.endHitAnimation = (entity, index) => {
-    $(`.${entity.name + index}`).removeClass("hitAnimation");
+    $(`.${entity.name + entity.id}`).removeClass(entity.animation);
 }
 
+app.gameOver = () => {
+    $(".game-over").css("visibility", "visible");
+}
 
 $(function () {
-
     app.init();
 });
 

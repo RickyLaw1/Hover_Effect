@@ -1,5 +1,6 @@
 @import "partials/setup";
 @import "partials/typography";
+@import "partials/utils";
 $primary: rgb(0, 119, 255);
 
 * {
@@ -22,7 +23,7 @@ html {
     transition: 0.3s;
 }
 
-.startScreen {
+.start-screen {
     height: 500px;
     width: 100%;
     max-width: 500px;
@@ -50,23 +51,23 @@ html {
 
 .play {
     width: 100%;
-    height: 100px;
+    height: 200px;
     overflow: hidden;
     position: relative;
-    .pointerIcon {
+    .pointer-icon {
         font-size: 20px;
         color: white;
         position: absolute;
         top: 50%;
         right: 48%;
         transform: translate(51%, -50%) rotate(110deg);
-        transition: 0.8s linear;
+        transition: 0.7s linear;
     }
 }
 
-.playButton {
+.play-button {
     font-size: 60px;
-    animation: glow1 5s infinite ease-in-out;
+    animation: glow1 4s infinite ease-in-out;
     transition: 0.1s;
     position: absolute;
     right: 50%;
@@ -100,23 +101,14 @@ html {
 
     }
     50% {
-        text-shadow: 2px 1px 20px $primary;
+        text-shadow: 2px 1px 80px $primary;
     }
     100% {
         
     }
 }
-@keyframes glow2 {
-    100% {
-        box-shadow: 2px 2px 40px 1px $primary;
-    }
-}
 
-.boxGlow {
-    animation: glow2 0.3s ease-in-out; 
-}
-
-.gameScreen {
+.game-screen {
     border: 1px solid #000;
     background: url(../assets/space.jpg);
     background-size: cover;
@@ -134,8 +126,6 @@ html {
     position: absolute;
     bottom: 0;
     z-index: 10;
-    // transform: translateY(100%);
-
 }
 
 .lives {
@@ -149,20 +139,23 @@ html {
     z-index: 10;
 }
 
-.mobileControls {
-    // position: absolute;
+// Mobile related
+.mobile-controls {
     width: 100%;
     color: rgba(255, 255, 255, 0.452);
     display: flex;
     justify-content: space-around;
-    display: none;
+    visibility: hidden;
 }
 
 @media (max-width:600px) {
-    // display: block;
+    .mobile-controls {
+        visibility: visible;
+    }
 }
 
-.leftKey, .rightKey {
+// Control keys
+.left-key, .right-key {
     width: 50px;
     height: 50px;
     border: 1px solid rgb(0, 132, 255);
@@ -172,7 +165,7 @@ html {
     justify-content: center;
 }
 
-.shootKey {
+.shoot-key {
     width: 150px;
     height: 50px;
     font-size: 20px;
@@ -183,14 +176,20 @@ html {
     align-items: center;
 }
 
-.playerModel {
-    // width: 20px;
-    // height: 20px;
-    border: 1px solid white;
+.player-model {
     position: absolute;
+    text-align: center;
+    i {
+        position: relative;
+        top: 10px;
+        left: -12px;
+        color: white;
+        font-size: 30px; 
+        transform: rotate(-90deg)
+    }
 }
 
-.playerCoords {
+.player-coords {
     position: absolute;
     top: 0;
     left: 0;
@@ -198,31 +197,110 @@ html {
 }
 
 .projectile {
-    // width: 20px;
-    // height: 20px;
     position: absolute;
     top: 0;
     left: 50px;
-    border: 1px solid purple;
     text-align: center;
     z-index: 10;
     font-size: 15px;
-    // background-color: white;
+    text-shadow: 1px 1px 5px cyan;
 }
 
+// Enemy styling and animation
 .enemy {
-    // width: 100px;
-    // height: 20px;
-    color: blue;
-    border: 1px solid purple;
-    background-color: rgb(228, 129, 206);
     position: absolute;
-    transition: background-color 0.1s, transform 0.1s;
+    transition: color 0.1s, transform 0.1s;
+}
+.welcome-enemy {
+    color: white;
+    background-color: gray;
+    text-align: center;
+}
+.nav-enemy {
+    color: white;
+}
+.gallery-enemy {
+    position: relative;
+    figcaption {
+        position: absolute;
+        color: white;
+        top: 0; left: 0; right: 0; bottom: 0;
+        text-align: center;
+        padding-top: 30%;
+        background-color: rgba(0, 0, 0, 0.767);
+        display: none;
+    }
+}
+.button-enemy {
+    border: 1px solid #2a2a2a;
+    border-radius: 40px;
+    background-color: gray;
+    color: white;
+    padding: 5px 40px 2px 40px;
+    letter-spacing: 2px;
+    overflow: hidden;
+    position: relative;
+    .button-text {
+        transition: transform 0.3s;
+    }
+    .icon {
+        @include position(absolute, 50%, -27px);
+        transform: translateY(calc(-50% + 1px));
+        transition: 0.3s;
+    }
+   
+}
+.airplane-enemy {
+    font-size: 30px;
+    color: white;
+     transform: rotate(90deg)
+}
+.camera-enemy {
+    font-size: 60px;
+    color: darkslategray;
 }
 
-.hitAnimation {
-    background-color: red;
+.hit-animation-welcome {
     color: purple;
-    // transform: rotate(360deg);
     text-decoration: underline;
+}
+.hit-animation-nav {
+    color: $primary;
+    text-decoration: underline;
+}
+.hit-animation-gallery {
+    figcaption {
+        display: block;
+    }
+}
+.hit-animation-button {
+        background-color: white;
+        color: #2a2a2a;
+        .button-text {
+            transform: translateX(-20px);
+        }
+    .icon {
+        right: 20px;
+        font-size: 2rem;
+    }
+}
+.hit-animation-plane {
+    transform: rotate(45deg);
+    color: $primary;
+}
+
+.game-over {
+    height: 500px;
+    width: 100%;
+    max-width: 500px;
+    background: rgba(0, 119, 255, 0.363);
+    color: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 30;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
 }
